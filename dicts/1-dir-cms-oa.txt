@@ -1,0 +1,202 @@
+# ========== 致远OA (Seeyon) ==========
+/seeyon/
+/seeyon/index.jsp
+/seeyon/main.do
+/seeyon/thirdpartyController.do
+/seeyon/htmlofficeservlet
+/seeyon/getSessionList.jsp
+/seeyon/wpsAssistServlet
+/seeyon/autoinstall.do.css/..;/ajax.do
+/seeyon/rest/authentication/ucpcLogin
+
+# ========== 泛微OA (Weaver) ==========
+/ecology/
+/weaver/
+/mobile/
+/mobile/DBconfigReader.jsp
+/mobile/browser/WorkflowCenterTreeData.jsp
+/weaver/bsh.servlet.BshServlet
+/api/ec/dev/app/getHandAllList
+/api/ec/dev/app/getIntfAllList
+/ecology/WEB-INF/prop/weaver.properties
+/ecology/classbean/
+/js/hrm/getdata.jsp
+
+# ========== 通达OA (Tongda) ==========
+/inc/expired.php
+/inc/td_version.inc
+/general/
+/ispirit/
+/ispirit/im/upload.php
+/ispirit/interface/gateway.php
+/mobile/auth_mo498y.php
+/general/login_code.php
+/logincheck_code.php
+
+# ========== 蓝凌OA (Landray) ==========
+/sys/
+/sys/ui/extend/varkind/custom.jsp
+/data/sys-common/datajson.js
+/sys/search/sys_search_main/sysSearchMain.do
+
+# ========== 万户OA (Wanhu) ==========
+/defaultroot/
+/defaultroot/login.jsp
+
+# ========== 用友NC (Yonyou) ==========
+/servlet/~ic/
+/servlet/~ic/bsh.servlet.BshServlet
+/NCFindWeb
+/service/~xfw/
+/uapws/
+/servlet/FileReceiveServlet
+/ServiceDispatcherServlet
+/system/config/getConfigInfo
+/nccloud/
+/api/cube/
+
+# ========== 金蝶 (Kingdee) ==========
+/kdkEdoor/
+/EAS/
+/K3Cloud/
+/ierp/
+
+# ========== 帆软 (FineReport/FineBI) ==========
+/WebReport/
+/WebReport/ReportServer
+/FineReport/
+/FineReport/ReportServer
+/decision/
+/decision/login
+/decision/system/info
+/decision/file?path=
+/decision/view/report
+
+# ========== WordPress ==========
+/wp-login.php
+/wp-admin/
+/wp-content/
+/wp-includes/
+/wp-json/
+/wp-json/wp/v2/users
+/xmlrpc.php
+/wp-config.php.bak
+/wp-config.php~
+/.wp-config.php.swp
+
+# ========== Drupal ==========
+/core/CHANGELOG.txt
+/core/modules/
+/user/login
+/CHANGELOG.txt
+/core/install.php
+/update.php
+
+# ========== Joomla ==========
+/administrator/
+/language/en-GB/en-GB.xml
+/administrator/manifests/files/joomla.xml
+/configuration.php~
+/htaccess.txt
+
+# ========== Confluence ==========
+/login.action
+/rest/api/space
+/rest/api/content
+/wiki/
+/wiki/login.action
+/server-info.action
+
+# ========== GitLab ==========
+/users/sign_in
+/api/v4/version
+/api/v4/projects
+/explore
+/-/graphql-explorer
+
+# ========== ThinkPHP ==========
+/index.php?s=captcha
+/index.php?s=/index/think\app/invokefunction
+/runtime/log/
+/Application/Runtime/Logs/
+
+# ========== Discuz ==========
+/forum.php
+/uc_server/
+/uc_server/admin.php
+/api/mobile/index.php
+
+# ========== DedeCMS ==========
+/dede/
+/dede/login.php
+/data/admin/ver.txt
+/include/
+/member/
+
+# ========== XXL-Job ==========
+/xxl-job-admin/
+/xxl-job-admin/toLogin
+/xxl-job-admin/api
+/xxl-job-admin/jobinfo
+
+# ========== Nacos ==========
+/nacos/
+/nacos/index.html
+/nacos/v1/auth/users
+/nacos/v1/auth/users?pageNo=1&pageSize=9
+/nacos/v1/cs/configs?search=accurate&dataId=&group=&pageNo=1&pageSize=10
+
+# ========== 若依 (RuoYi) ==========
+/captchaImage
+/login
+/getInfo
+/getRouters
+/prod-api/captchaImage
+/dev-api/captchaImage
+
+# ========== JEECG-Boot ==========
+/jeecg-boot/
+/jeecg-boot/sys/
+/jeecg-boot/sys/user/list
+/jeecg-boot/sys/dict/loadDict
+
+# ========== 其他常见系统 ==========
+# Zabbix
+/zabbix/
+/zabbix/api_jsonrpc.php
+
+# phpMyAdmin
+/phpmyadmin/
+/pma/
+/phpMyAdmin/
+
+# Grafana
+/grafana/
+/grafana/login
+/api/dashboards/home
+
+# Jenkins
+/jenkins/
+/jenkins/login
+/jenkins/script
+
+# SonarQube
+/sonarqube/
+/api/server/version
+
+# Harbor
+/harbor/
+/api/v2.0/
+/c/login
+
+# MinIO
+/minio/
+/minio/login
+/minio/health/live
+
+# Dubbo Admin
+/dubbo-admin/
+
+# Spring Boot Admin
+/applications
+/admin/applications

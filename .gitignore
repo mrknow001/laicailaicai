@@ -1,0 +1,8 @@
+# 本地 Claude 权限和环境配置，不提交
+.claude/settings.local.json
+
+# 项目实例可能包含目标、接口、证据等敏感内容，不提交
+projects/*
+!projects/README.md
+!projects/_template/
+!projects/_template/**

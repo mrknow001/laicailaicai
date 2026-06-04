@@ -1,0 +1,40 @@
+regex_rules:
+  - name: "http_url"
+    pattern: "http[s]?://[^\\\")'`\\s\\\\]+"
+    description: "HTTP/HTTPS 链接"
+    category: "url"
+    severity: "CRITICAL"
+    match_group: 0
+    enabled: true
+
+  - name: "base_url"
+    pattern: "['\"`]{0,3}[\\w]+url[\\w]*['\"`]{0,3}\\s*:\\s*['\"`(]{1,3}http[s]?://[^\\\")'`\\s\\\\]+['\"`)]{1,3}"
+    description: "基础 URL 配置"
+    category: "url"
+    severity: "CRITICAL"
+    match_group: 0
+    enabled: true
+
+  - name: "api_path"
+    pattern: "['\"`](/(?:api|openapi|gateway|service|admin|user|auth|order|pay|file|upload|download)[^'\"`\\s?#]*)['\"`]"
+    description: "常见 API 路径"
+    category: "api"
+    severity: "HIGH"
+    match_group: 1
+    enabled: true
+
+  - name: "token_key"
+    pattern: "(?i)(access[_-]?token|authorization|bearer|jwt|sessionid|x-token|token)"
+    description: "认证相关关键字"
+    category: "auth"
+    severity: "HIGH"
+    match_group: 0
+    enabled: true
+
+  - name: "sensitive_keyword"
+    pattern: "(?i)(password|passwd|secret|private[_-]?key|apikey|api[_-]?key|credential)"
+    description: "敏感配置关键字"
+    category: "sensitive"
+    severity: "HIGH"
+    match_group: 0
+    enabled: true
