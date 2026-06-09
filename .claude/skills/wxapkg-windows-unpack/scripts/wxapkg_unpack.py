@@ -12,6 +12,7 @@ import shutil
 import struct
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -22,7 +23,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 AES_IV = b"the iv: 16 bytes"
 AES_SALT = b"saltiest"
 DEFAULT_XOR_KEY = 0x66
-DEFAULT_WUWXAPKG_DIR = Path(r"D:\Tools\MiniSpy-last\WorkDir\wuWxapkg-2")
+BUNDLED_NODE_EXE = SCRIPT_DIR / "NodeJS" / "node.exe"
+BUNDLED_WUWXAPKG_DIR = SCRIPT_DIR / "wuwxapkg"
 TAB_BAR_UNSUPPORTED_KEYS = {
     "fontSize",
     "iconData",
@@ -1050,6 +1052,17 @@ def postprocess_restored_project(merged_dir: Path) -> dict[str, Any]:
     app_json_path = merged_dir / "app.json"
     app_json = read_json_file(app_json_path)
     if isinstance(app_json, dict):
+        for page in app_json.get("pages", []):
+            if isinstance(page, str):
+                created += ensure_page_files_basic(merged_dir, page)
+        for subpackage in app_json.get("subPackages", []):
+            if not isinstance(subpackage, dict) or not isinstance(subpackage.get("root"), str):
+                continue
+            root = subpackage["root"].strip("/\\")
+            for page in subpackage.get("pages", []):
+                if isinstance(page, str):
+                    created += ensure_page_files_basic(merged_dir, f"{root}/{page}")
+
         added = add_unregistered_existing_pages(app_json, candidate_page_files(merged_dir))
         if added:
             for page in app_json.get("pages", []):
@@ -1211,33 +1224,27 @@ def move_compiled_file(merged_dir: Path, name: str) -> int:
     return 1
 
 
-def find_wuwxapkg_dir(explicit: str | None = None) -> Path | None:
-    candidates = []
-    if explicit:
-        candidates.append(Path(explicit))
-    env_value = os.environ.get("WUWXAPKG_DIR")
-    if env_value:
-        candidates.append(Path(env_value))
-    candidates.extend(
-        [
-            DEFAULT_WUWXAPKG_DIR,
-            Path(r"D:\Tools\MiniSpy-last\WorkDir\wuWxapkg-1"),
-        ]
-    )
-    for candidate in candidates:
-        script = candidate / "wuWxapkg.js"
-        modules = candidate / "node_modules"
-        if script.exists() and modules.exists():
-            return candidate
+def bundled_node() -> Path | None:
+    return BUNDLED_NODE_EXE if BUNDLED_NODE_EXE.exists() else None
+
+
+def bundled_wuwxapkg_dir() -> Path | None:
+    required = [
+        BUNDLED_WUWXAPKG_DIR / "wuWxapkg.js",
+        BUNDLED_WUWXAPKG_DIR / "wuLib.js",
+        BUNDLED_WUWXAPKG_DIR / "wuJs.js",
+        BUNDLED_WUWXAPKG_DIR / "wuConfig.js",
+        BUNDLED_WUWXAPKG_DIR / "wuWxml.js",
+        BUNDLED_WUWXAPKG_DIR / "wuWxss.js",
+        BUNDLED_WUWXAPKG_DIR / "node_modules",
+    ]
+    if all(path.exists() for path in required):
+        return BUNDLED_WUWXAPKG_DIR
     return None
 
 
-def node_available() -> bool:
-    return shutil.which("node") is not None
-
-
-def run_wuwxapkg(wu_dir: Path, wxapkg_file: Path, cwd: Path, extra_args: list[str] | None = None) -> tuple[bool, str]:
-    args = ["node", str(wu_dir / "wuWxapkg.js")]
+def run_wuwxapkg(node_exe: Path, wu_dir: Path, wxapkg_file: Path, cwd: Path, extra_args: list[str] | None = None) -> tuple[bool, str]:
+    args = [str(node_exe), str(wu_dir / "wuWxapkg.js")]
     if extra_args:
         args.extend(extra_args)
     args.append(str(wxapkg_file))
@@ -1269,15 +1276,24 @@ def copy_tree(source: Path, destination: Path) -> int:
     return copied
 
 
+def replace_dir_with_tree(source: Path, destination: Path) -> int:
+    if destination.exists():
+        remove_tree_with_retry(destination)
+    destination.mkdir(parents=True, exist_ok=True)
+    return copy_tree(source, destination)
+
+
 def restore_with_wuwxapkg(
     output_root: Path,
     packages: list[PackageResult],
     appid: str,
-    wu_dir: Path | None = None,
 ) -> tuple[bool, int, str]:
-    resolved_wu_dir = find_wuwxapkg_dir(str(wu_dir) if wu_dir else None)
-    if not resolved_wu_dir or not node_available():
-        return False, 0, "wuWxapkg unavailable"
+    node_exe = bundled_node()
+    resolved_wu_dir = bundled_wuwxapkg_dir()
+    if not node_exe:
+        return False, 0, "bundled node.exe unavailable"
+    if not resolved_wu_dir:
+        return False, 0, "bundled wuWxapkg incomplete"
 
     successful = [pkg for pkg in packages if not pkg.error]
     main_packages = [pkg for pkg in successful if pkg.kind == "main"]
@@ -1294,7 +1310,7 @@ def restore_with_wuwxapkg(
     main_pkg = main_packages[0]
     main_wxapkg = restore_work / "__APP__.wxapkg"
     shutil.copy2(main_pkg.decrypted, main_wxapkg)
-    ok, log = run_wuwxapkg(resolved_wu_dir, main_wxapkg, restore_work)
+    ok, log = run_wuwxapkg(node_exe, resolved_wu_dir, main_wxapkg, restore_work)
     logs.append(log)
     if not ok:
         (output_root / "restore-wuwxapkg.log").write_text("\n".join(logs), encoding="utf-8", errors="replace")
@@ -1309,7 +1325,7 @@ def restore_with_wuwxapkg(
         sub_name = safe_name(Path(pkg.source).stem)
         sub_wxapkg = restore_work / f"{sub_name}.wxapkg"
         shutil.copy2(pkg.decrypted, sub_wxapkg)
-        ok, log = run_wuwxapkg(resolved_wu_dir, sub_wxapkg, restore_work, ["-s=__APP__"])
+        ok, log = run_wuwxapkg(node_exe, resolved_wu_dir, sub_wxapkg, restore_work, ["-s=__APP__"])
         logs.append(log)
         sub_restore_root = restore_work / safe_name(Path(sub_wxapkg).stem) / "__APP__"
         if ok and sub_restore_root.exists():
@@ -1338,6 +1354,7 @@ def restore_with_wuwxapkg(
     report = {
         "mode": "wuWxapkg",
         "tool": str(resolved_wu_dir),
+        "node": str(node_exe),
         "appid_project": str(merged_dir),
         "postprocess": postprocess,
         "notes": [
@@ -1578,8 +1595,30 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Decrypt and unpack Windows WeChat Mini Program wxapkg files.")
     parser.add_argument("appid", help="Mini Program appid, for example wx1234567890abcdef")
     parser.add_argument("--out", required=True, help="Output directory")
+    parser.add_argument(
+        "--out-type",
+        choices=("simple", "full"),
+        default="simple",
+        help="Output type: simple writes merged project files directly to --out; full keeps decrypted/packages/merged structure.",
+    )
     parser.add_argument("--applet-root", help="Override WECHAT_APPLET_ROOT from scripts/.env")
     return parser.parse_args(argv)
+
+
+def process_output(appid: str, output_root: Path, applet_root: Path, out_type: str) -> RunResult:
+    if out_type == "full":
+        return process(appid, output_root, applet_root)
+
+    with tempfile.TemporaryDirectory(prefix="wxapkg-unpack-") as temp_dir:
+        temp_output = Path(temp_dir) / output_root.name
+        result = process(appid, temp_output, applet_root)
+        merged_dir = temp_output / "merged"
+        if not merged_dir.exists():
+            raise RuntimeError("merged project not found")
+        copied = replace_dir_with_tree(merged_dir, output_root)
+        result.output_root = str(output_root)
+        result.merged_files = copied
+        return result
 
 
 def main(argv: list[str]) -> int:
@@ -1591,7 +1630,12 @@ def main(argv: list[str]) -> int:
         return 2
 
     try:
-        result = process(args.appid, Path(args.out).resolve(), Path(applet_root_value).expanduser())
+        result = process_output(
+            args.appid,
+            Path(args.out).resolve(),
+            Path(applet_root_value).expanduser(),
+            args.out_type,
+        )
     except Exception as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
@@ -1600,7 +1644,8 @@ def main(argv: list[str]) -> int:
     print(f"wxapkg: {result.wxapkg_count}")
     print(f"packages: {len(result.packages)}")
     print(f"files: {result.merged_files}")
-    print(f"merged: {Path(result.output_root) / 'merged'}")
+    merged_path = Path(result.output_root) / "merged" if args.out_type == "full" else Path(result.output_root)
+    print(f"merged: {merged_path}")
     print(f"restored: {result.restored_files}")
     print(f"engine: {result.restore_engine}")
     print(f"conflicts: {result.conflicts}")
