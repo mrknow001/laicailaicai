@@ -21,12 +21,15 @@
 - `/mapp`：从小程序包中提取接口、页面路由、业务线索。
 - `/generate-dict`：根据业务、接口、参数生成低风险字典。
 
-## 沉淀命令
+## 特长命令
+
+- `/specialty-list`：列出可用特长，只检查 `.claude/skills/specialty-skills/`。
+- `/specialty-use`：使用某项特长，进入单一挖掘方向。
+
+## 输出命令
 
 - `/report`：编写或更新报告。
 - `/exp`：写入经验库。
-- `/specialty-list`：列出可用特长，只检查 `.claude/skills/specialty-skills/`。
-- `/specialty-use`：使用某项特长，进入单一挖掘方向。
 
 ## 普通 skills
 
