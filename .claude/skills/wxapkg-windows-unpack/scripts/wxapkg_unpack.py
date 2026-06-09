@@ -23,6 +23,11 @@ AES_IV = b"the iv: 16 bytes"
 AES_SALT = b"saltiest"
 DEFAULT_XOR_KEY = 0x66
 DEFAULT_WUWXAPKG_DIR = Path(r"D:\Tools\MiniSpy-last\WorkDir\wuWxapkg-2")
+TAB_BAR_UNSUPPORTED_KEYS = {
+    "fontSize",
+    "iconData",
+    "selectedIconData",
+}
 RUNTIME_RESIDUE_MARKERS = (
     "$gwx",
     "$gwn",
@@ -629,6 +634,45 @@ def sanitize_json_warning_files(merged_dir: Path) -> int:
     return changed_files
 
 
+def convert_simple_object_attr(match: re.Match[str]) -> str:
+    attr = match.group("attr")
+    key = match.group("key")
+    value = match.group("value")
+    return f'{attr}="{key}:{value}"'
+
+
+def sanitize_wxml_content(content: str) -> tuple[str, int]:
+    pattern = re.compile(
+        r'(?P<attr>[A-Za-z_:][-A-Za-z0-9_:.]*)="\{\{\s*(?P<key>[A-Za-z_-][A-Za-z0-9_-]*)\s*:\s*\'(?P<value>[^\'{}]*)\'\s*\}\}"'
+    )
+    return pattern.subn(convert_simple_object_attr, content)
+
+
+def sanitize_wxml_files(merged_dir: Path) -> dict[str, Any]:
+    changed_files = 0
+    replacements = 0
+    files: list[str] = []
+    for path in merged_dir.rglob("*.wxml"):
+        if "_compiled" in path.parts:
+            continue
+        try:
+            content = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        cleaned, changed = sanitize_wxml_content(content)
+        if not changed:
+            continue
+        path.write_text(cleaned, encoding="utf-8")
+        changed_files += 1
+        replacements += changed
+        files.append(path.relative_to(merged_dir).as_posix())
+    return {
+        "changed_files": changed_files,
+        "replacements": replacements,
+        "files": files[:100],
+    }
+
+
 def normalize_page_path(value: str) -> str:
     normalized = value.replace("\\", "/").lstrip("/")
     if normalized.endswith(".html"):
@@ -649,12 +693,14 @@ def normalize_tab_bar(value: Any) -> Any:
     if not isinstance(value, dict):
         return value
     normalized = clean_window_config(value)
+    for key in TAB_BAR_UNSUPPORTED_KEYS:
+        normalized.pop(key, None)
     items = normalized.get("list")
     if isinstance(items, list):
         for item in items:
             if isinstance(item, dict):
-                item.pop("iconData", None)
-                item.pop("selectedIconData", None)
+                for key in TAB_BAR_UNSUPPORTED_KEYS:
+                    item.pop(key, None)
                 if isinstance(item.get("pagePath"), str):
                     item["pagePath"] = normalize_page_path(item["pagePath"])
     return normalized
@@ -991,6 +1037,7 @@ def postprocess_restored_project(merged_dir: Path) -> dict[str, Any]:
         "created": 0,
         "registered_existing_pages": 0,
         "sanitized_json_files": 0,
+        "sanitized_wxml": {},
         "moved_compiled_artifacts": 0,
         "skipped_compiled_artifacts": [],
         "runtime_residue": {},
@@ -1022,6 +1069,7 @@ def postprocess_restored_project(merged_dir: Path) -> dict[str, Any]:
 
     stats["sanitized_json_files"] = sanitize_json_warning_files(merged_dir)
     stats["runtime_residue"] = repair_runtime_residue(merged_dir)
+    stats["sanitized_wxml"] = sanitize_wxml_files(merged_dir)
     compiled_artifacts = move_compiled_artifacts(merged_dir)
     stats["moved_compiled_artifacts"] = compiled_artifacts["moved"]
     stats["skipped_compiled_artifacts"] = compiled_artifacts["skipped"]

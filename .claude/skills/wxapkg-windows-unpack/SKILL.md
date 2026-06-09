@@ -57,7 +57,7 @@ python .claude/skills/wxapkg-windows-unpack/scripts/wxapkg_unpack.py wx123456789
 6. 解包所有主包和分包到 `packages/`，阻止路径穿越。
 7. 识别主包和分包 root，生成基础合并目录。
 8. 优先用 `wuWxapkg` 对解密包做真实工程还原，并覆盖生成最终 `merged/`。
-9. 对 `merged/` 做通用工程修复：清理无效 JSON 字段、修正页面路径、补齐页面文件、识别并隔离常见运行态残留。
+9. 对 `merged/` 做通用工程修复：清理无效 JSON 字段、修正页面路径、补齐页面文件、修复简单 WXML 属性语法、识别并隔离常见运行态残留。
 10. 输出 `manifest.json`、`restore-diagnostics.json` 和极简执行摘要。
 
 ## 注意事项
