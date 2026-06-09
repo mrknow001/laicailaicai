@@ -2,6 +2,17 @@
 .claude/settings.local.json
 
 # 项目实例可能包含目标、接口、证据等敏感内容，不提交
+.claude/skills/**/scripts/.env
+.claude/skills/**/scripts/__pycache__/
+.claude/skills/**/scripts/*.pyc
+.claude/skills/wxapkg-windows-unpack/scripts/*/decrypted/
+.claude/skills/wxapkg-windows-unpack/scripts/*/packages/
+.claude/skills/wxapkg-windows-unpack/scripts/*/merged/
+.claude/skills/wxapkg-windows-unpack/scripts/*/_conflicts/
+.claude/skills/wxapkg-windows-unpack/scripts/*/_restore_work/
+.claude/skills/wxapkg-windows-unpack/scripts/*/manifest.json
+.claude/skills/wxapkg-windows-unpack/scripts/*/unpack.log
+.claude/skills/wxapkg-windows-unpack/scripts/*/restore-wuwxapkg.log
 projects/*
 !projects/README.md
 !projects/_template/
