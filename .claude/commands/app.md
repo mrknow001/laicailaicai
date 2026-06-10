@@ -1,26 +1,26 @@
 ---
-description: 从 APK 中提取后端接口和业务线索
-argument-hint: "<APK路径或App分析说明>"
+description: 将 App 安装包、反编译目录或 App 分析材料作为前端资产入口，提取后端接口、参数、认证逻辑和业务线索。
+argument-hint: "<APK路径、反编译目录或App分析说明>"
 ---
 
 # /app
 
-用途：从用户提供的安装包中提取后端接口、参数、配置和客户端逻辑线索。
+这是一个 App 前端资产入口。App 不是最终渗透对象，只是后端接口、参数、认证逻辑和业务流程的线索来源。
 
-执行规则：
+请按以下方式处理：
 
-1. 先读取 `CLAUDE.md` 和 `.claude/skills/interface-source/SKILL.md`。
-2. App 不是最终测试对象，只是后端接口和业务线索来源。
-3. 只分析用户提供的安装包。
-4. 不保存真实密钥、Token、证书私钥等敏感原文，只记录脱敏摘要和来源位置。
-5. 提取到的后端域名、IP、BaseURL 必须做 scope check。
+1. 读取 `CLAUDE.md` 和 `.claude/skills/interface-source/SKILL.md`。
+2. 仅分析用户提供的 APK、反编译目录或 App 分析材料。
+3. 使用 `info-find` 提取 URL、BaseURL、接口路径、参数、认证关键字和敏感配置摘要。
+4. 围绕提取结果按需审计客户端代码和配置，理解接口用途、认证逻辑、参数来源和业务流程。
+5. 将有效线索写入当前项目的 `leads.md`、`interfaces.md`，必要时补充 `hypotheses.md`。
+6. 只把 scope check 通过的后端接口交给当前 L 档或特长继续渗透测试。
 
-输出字段：
+输出重点：
 
-- 包名 / 版本 / 来源
-- API / BaseURL
-- 参数和疑似功能
-- 认证与客户端逻辑线索
-- 敏感配置摘要
+- App 来源信息
+- API / BaseURL / 参数
+- 认证与业务逻辑线索
+- 敏感配置脱敏摘要
 - scope check 状态
 - 后续漏洞假设
