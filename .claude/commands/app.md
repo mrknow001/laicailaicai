@@ -12,7 +12,7 @@ argument-hint: "<APK路径、反编译目录或App分析说明>"
 1. 读取 `CLAUDE.md` 和 `.claude/skills/interface-source/SKILL.md`。
 2. 仅分析用户提供的 APK、反编译目录或 App 分析材料。
 3. 使用 `info-find` 提取 URL、BaseURL、接口路径、参数、认证关键字和敏感配置摘要。
-4. 按当前 L 档审计客户端代码和配置：L1 只围绕 `info-find` 命中上下文快速审计；L2 / L3 必须全量审计 App 源码或反编译代码。
+4. 按当前 L 档审计客户端代码和配置：L1 只围绕 `info-find` 命中上下文快速审计；L2 / L3 按价值分配审计深度——脚本定位后深读认证 / 权限 / 支付等高价值模块，不为「全量」逐行读完无关代码。
 5. 将有效线索写入当前项目的 `leads.md`、`interfaces.md`，必要时补充 `hypotheses.md`。
 6. 只把 scope check 通过的后端接口交给当前 L 档或特长继续渗透测试。
 
