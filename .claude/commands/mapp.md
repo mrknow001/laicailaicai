@@ -13,7 +13,7 @@ argument-hint: "<小程序appid、小程序包、源码路径或分析说明>"
 2. 如果参数是小程序 appid，使用 `.claude/skills/wxapkg-windows-unpack/SKILL.md` 解包还原代码。
 3. 如果参数是小程序包、源码目录或分析材料，直接以用户提供内容作为线索来源。
 4. 使用 `info-find` 提取 URL、BaseURL、接口路径、参数、认证关键字和敏感配置摘要。
-5. 围绕提取结果按需审计 JS、页面路由和业务流程，理解接口用途、参数来源和认证逻辑。
+5. 按当前 L 档审计 JS、页面路由和业务流程：L1 只围绕 `info-find` 命中上下文快速审计；L2 / L3 必须全量审计小程序源码或解包代码。
 6. 将有效线索写入当前项目的 `leads.md`、`interfaces.md`，必要时补充 `hypotheses.md`。
 7. 只把 scope check 通过的后端接口交给当前 L 档或特长继续渗透测试。
 
