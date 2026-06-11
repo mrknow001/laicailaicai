@@ -256,14 +256,12 @@ python .claude/skills/wxapkg-windows-unpack/scripts/wxapkg_unpack.py <appid> --o
 
 ### 6.7 经验沉淀与记忆（experience-manager）
 
-让智能体越用越接近资深渗透测试员，但**绝不沦为敏感数据仓库**：
+让智能体**自我进化**，且经验**可移植**（全部存在项目内 `memory/`，随仓库迁移），但**绝不沦为敏感数据仓库**：
 
-| 文件 | 内容 |
-| --- | --- |
-| `memory/experience.md` | 通用渗透方法论、判断模式、脱敏案例 |
-| `memory/make-mistakes.md` | 误报、踩坑、错误方向、触发风控的教训 |
-| `memory/fingerprints.md` | 技术指纹与高价值测试方向的关联 |
-| `memory/waf.md` | WAF / 风控的低影响观察与避坑 |
+- `memory/INDEX.md`：召回索引 + 使用约定，开工前先读它。
+- `memory/<name>.md`：一事一文件，frontmatter 用 `type` 区分 experience / mistake / fingerprint / waf，正文严格精炼（言多必失）。
+
+闭环是**写（自动沉淀）→ 召回 → 应用 → 修正**：满足「可复用 + 非显然 + 可浓缩」三标准时主动沉淀，开工前按 `INDEX.md` 召回相关经验，召回时若过期或冲突则复核更新。`/exp` 只是人工补充入口。
 
 只写**脱敏后**的方法论；禁止写入真实用户数据、Token/Cookie/密钥、未脱敏请求响应、客户源码、可直接复现未公开漏洞的细节。
 
@@ -316,8 +314,8 @@ python .claude/skills/wxapkg-windows-unpack/scripts/wxapkg_unpack.py <appid> --o
 │   └── <项目标识>/                     #   实际项目实例
 │
 ├── memory/                            # 数据层：跨项目可复用经验
-│   ├── experience.md  make-mistakes.md
-│   └── fingerprints.md  waf.md
+│   ├── INDEX.md                       #   召回索引 + 使用约定
+│   └── <name>.md                      #   一事一文件，type 区分 experience/mistake/fingerprint/waf
 │
 └── dicts/                             # 数据层：低风险字典库
     ├── INDEX.md                       #   字典索引与用途说明
@@ -380,7 +378,7 @@ python .claude/skills/wxapkg-windows-unpack/scripts/wxapkg_unpack.py <appid> --o
 
 ⑤ 沉淀输出
    /report  → 生成脱敏报告（漏洞名称/等级/描述/危害/数据包/复现/修复建议）
-   /exp     → 把"code 报错泄露"手法沉淀进 memory/experience.md
+   /exp     → 把"code 报错泄露"手法沉淀进 memory/（自动沉淀为主，/exp 人工补充）
 ```
 
 > 全程：危险接口只进 `dangerous-untested.md`；遇限流/风控立即停；最多查看 10 条样例；不保存敏感原文。

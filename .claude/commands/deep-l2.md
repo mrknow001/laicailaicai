@@ -9,7 +9,7 @@ argument-hint: "<业务流程、接口、漏洞假设或测试说明>"
 
 执行规则：
 
-1. 先读取 `CLAUDE.md`、当前项目声明和 `Competence/workflow-and-verification.md`。
+1. 先读取 `CLAUDE.md`、当前项目声明和 `Competence/workflow-and-verification.md`；并读取 `memory/INDEX.md`，按当前目标类型召回相关历史经验。
 2. 围绕明确接口、接口组、业务流程或漏洞假设展开，不做无目标扩散。
 3. 先审计数据包、JS、参数语义、返回结构和业务状态，再决定是否验证。
 4. 如果存在 Web JS、前端源码、小程序解包代码、App 源码或 App 反编译代码，必须全量审计。
@@ -26,3 +26,4 @@ argument-hint: "<业务流程、接口、漏洞假设或测试说明>"
 - 结果：
 - 回头看项：
 - 需要用户确认的问题：
+- 本轮够格自沉淀经验（按 `memory/` 规则，无则略）：

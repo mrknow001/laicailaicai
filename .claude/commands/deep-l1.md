@@ -9,7 +9,7 @@ argument-hint: "<目标、接口、线索或测试说明>"
 
 执行规则：
 
-1. 先读取 `CLAUDE.md`、当前项目声明和 `Competence/workflow-and-verification.md`。
+1. 先读取 `CLAUDE.md`、当前项目声明和 `Competence/workflow-and-verification.md`；并读取 `memory/INDEX.md`，按当前目标类型召回相关历史经验。
 2. 按 L1 策略执行：快速信息提取、围绕 `info-find` 命中上下文审计 JS / 小程序代码 / App 反编译代码、接口访问归类和 L1 默认测试项。
 3. L1 默认测试项只包括未授权、信息泄露、SQL 注入闭合 / 排序测试、特有小字典参数 fuzz。
 4. 默认测试项以外的漏洞类型，先和用户确认测试方案。
@@ -23,3 +23,4 @@ argument-hint: "<目标、接口、线索或测试说明>"
 - 默认测试项结果：
 - 未完成范围：
 - 是否建议进入 L2：
+- 本轮够格自沉淀经验（按 `memory/` 规则，无则略）：
