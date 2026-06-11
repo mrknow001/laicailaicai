@@ -9,7 +9,7 @@ argument-hint: "<白名单、强度限制、时间窗口和目标说明>"
 
 执行规则：
 
-1. 先读取 `CLAUDE.md`、当前项目声明和 `Competence/workflow-and-verification.md`；并读取 `memory/INDEX.md`，按当前目标类型召回相关历史经验。
+1. 先读取 `CLAUDE.md`、当前项目声明和 `Competence/workflow-and-verification.md`；并读取 `memory/INDEX.md` 召回相关历史经验；复杂 / 多目标时读取或建立 `plan.md`，逐项推进。
 2. 启用前必须明确白名单资产、路径、接口、模块或业务流程。
 3. 启用前必须明确字典规模、请求速度、并发限制、时间窗口和熔断条件。
 4. 在白名单内做受控接口猜测、参数猜测、枚举值猜测、回头看项复测或小范围 fuzz。
@@ -27,3 +27,4 @@ argument-hint: "<白名单、强度限制、时间窗口和目标说明>"
 - 批次结果：
 - 未完成范围：
 - 本轮够格自沉淀经验（按 `memory/` 规则，无则略）：
+- plan.md 进度 / 完成度更新（复杂 / 多目标）：

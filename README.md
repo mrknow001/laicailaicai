@@ -308,7 +308,7 @@ python .claude/skills/wxapkg-windows-unpack/scripts/wxapkg_unpack.py <appid> --o
 │
 ├── projects/                          # 数据层：项目状态
 │   ├── _template/                     #   ★ 标准模板，新项目必须复制它
-│   │   ├── project.md  scope.md  leads.md  interfaces.md
+│   │   ├── project.md  plan.md  scope.md  leads.md  interfaces.md
 │   │   ├── hypotheses.md  tests.md  findings.md  findings/
 │   │   ├── dangerous-untested.md  report.md  evidence/
 │   └── <项目标识>/                     #   实际项目实例
