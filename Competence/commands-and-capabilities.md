@@ -54,3 +54,14 @@
 - `.claude/skills/specialty-skills/<特长名>/SKILL.md`
 
 `.claude/skills/specialty-skills/SPECIALTY_TEMPLATE.md` 只是特长编写模板，不是真实特长。
+
+## Delegate Agents
+
+主 loop 把「耗时 + 上下文密集 + 后续不需带上」的重活外包给 delegate agent，自己保持轻量、随时响应用户。详见 `Competence/workflow-and-verification.md` Delegate 机制、`Competence/delegate-examples.md` 案例、`Competence/delegate-quick-ref.md` 速查。
+
+现成 agent 位于 `.claude/agents/`：
+
+- `file-analyzer`：深度分析大文件 / 大目录（> 500KB 文件或 > 50 文件目录），提取接口、认证逻辑、敏感配置，只返回结构化结论。
+- `batch-tester`：批量重复测试（> 20 接口存活检测 / > 30 参数 fuzz / 多目标假设验证），自带 scope check 与熔断，只返回摘要。
+
+也可直接用 Claude Code 内置的 `Explore`（深度搜索）和 `general-purpose`（通用多步任务）agent。
